@@ -14,9 +14,10 @@ $result = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $room_id = trim($_POST['room_id'] ?? '');
     $room_password = trim($_POST['room_password'] ?? '');
+    $slot_number = trim($_POST['slot_number'] ?? '');
     $match_time = trim($_POST['match_time'] ?? '');
 
-    if ($room_id !== '' && $room_password !== '' && in_array($match_time, $slots, true)) {
+    if ($room_id !== '' && $room_password !== '' && $slot_number !== '' && in_array($match_time, $slots, true)) {
         $booked = load_booked_slots();
         $sent = [];
         $failed = [];
@@ -27,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $chat_id = get_chat_id_for_username($bookedUsername);
             if ($chat_id) {
-                $text = "🎮 *Room Details*\n\n⏰ Match: *$match_time*\n🆔 Room ID: `$room_id`\n🔑 Password: `$room_password`\n\nGood luck, see you in the lobby!";
+                $text = "🎮 *Room Details*\n\n⏰ Match: *$match_time*\n🆔 Room ID: `$room_id`\n🔑 Password: `$room_password`\n🎯 Slot Number: *$slot_number*\n\nGood luck, see you in the lobby!";
                 send_telegram_message($chat_id, $text);
                 $sent[] = $bookedUsername;
             } else {
@@ -84,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="room_password">Room Password</label>
       <input type="text" id="room_password" name="room_password" placeholder="e.g. abcd12" required>
 
+      <label for="slot_number">Slot Number</label>
+      <input type="text" id="slot_number" name="slot_number" placeholder="e.g. 5" required>
+
       <button type="submit">Send to Booked Users</button>
     </form>
   </div>
@@ -105,6 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <p>No bookings found for this slot.</p>
     <?php endif; ?>
   </div>
+  <?php endif; ?>
+</div>
+</body>
+</html>
   <?php endif; ?>
 </div>
 </body>
